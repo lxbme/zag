@@ -19,7 +19,7 @@ pub fn Hashmap(comptime K: type, comptime V: type) type {
         available: usize,
         allocator: std.mem.Allocator,
 
-        fn init(allocator: std.mem.Allocator) !Self {
+        pub fn init(allocator: std.mem.Allocator) !Self {
             const keys = try allocator.alloc(?K, INIT_CAPACITY);
             const values = try allocator.alloc(?V, INIT_CAPACITY);
             @memset(keys, null);
@@ -34,12 +34,12 @@ pub fn Hashmap(comptime K: type, comptime V: type) type {
             };
         }
 
-        fn deinit(self: *Self) void {
+        pub fn deinit(self: *Self) void {
             self.allocator.free(self.keys);
             self.allocator.free(self.values);
         }
 
-        fn instert(self: *Self, k: K, v: V) !void {
+        pub fn instert(self: *Self, k: K, v: V) !void {
             var idx = self.getIdx(@as(usize, hashKey(k)));
             for (0..self.capacity) |_| {
                 if (self.keys[idx] == null) {
@@ -60,7 +60,7 @@ pub fn Hashmap(comptime K: type, comptime V: type) type {
             try self.instert(k, v);
         }
 
-        fn get(self: Self, query: K) ?V {
+        pub fn get(self: Self, query: K) ?V {
             var idx = self.getIdx(@as(usize, hashKey(query)));
             if (self.keys[idx] == null) return null;
 

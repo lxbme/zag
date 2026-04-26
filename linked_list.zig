@@ -24,7 +24,7 @@ pub fn LinkedList(comptime ItemType: type) type {
         length: usize,
         allocator: std.mem.Allocator,
 
-        fn init(allocator: std.mem.Allocator) !Self {
+        pub fn init(allocator: std.mem.Allocator) !Self {
             const head_ptr = try allocator.create(NodeType);
             head_ptr.* = .{
                 .data = undefined,
@@ -38,7 +38,7 @@ pub fn LinkedList(comptime ItemType: type) type {
             };
         }
 
-        fn insert(self: *Self, idx: usize, data: ItemType) !void {
+        pub fn insert(self: *Self, idx: usize, data: ItemType) !void {
             if (idx > self.length) return error.IndexOutOfBounds;
 
             var new_node_ptr = try self.allocator.create(NodeType);
@@ -63,7 +63,7 @@ pub fn LinkedList(comptime ItemType: type) type {
             self.length += 1;
         }
 
-        fn delete(self: *Self, idx: usize) !void {
+        pub fn delete(self: *Self, idx: usize) !void {
             if (idx >= self.length) return error.IndexOutOfBounds;
 
             var the_prev = self.head;
@@ -81,7 +81,7 @@ pub fn LinkedList(comptime ItemType: type) type {
             self.length -= 1;
         }
 
-        fn deinit(self: *Self) void {
+        pub fn deinit(self: *Self) void {
             var current = self.head.next;
             for (0..self.length) |_| {
                 current = current.next;
@@ -90,7 +90,7 @@ pub fn LinkedList(comptime ItemType: type) type {
             self.allocator.destroy(self.head);
         }
 
-        fn get(self: Self, idx: usize) !ItemType {
+        pub fn get(self: Self, idx: usize) !ItemType {
             if (idx >= self.length) return error.IndexOutOfBounds;
             var the_prev = self.head;
             for (0..idx) |_| {
@@ -99,7 +99,7 @@ pub fn LinkedList(comptime ItemType: type) type {
             return the_prev.next.data;
         }
 
-        fn append(self: *Self, data: ItemType) !void {
+        pub fn append(self: *Self, data: ItemType) !void {
             var new_node_ptr = try self.allocator.create(NodeType);
             new_node_ptr.* = .{
                 .data = data,
@@ -114,7 +114,7 @@ pub fn LinkedList(comptime ItemType: type) type {
             self.length += 1;
         }
 
-        fn popend(self: *Self) !ItemType {
+        pub fn popend(self: *Self) !ItemType {
             if (self.length == 0) return error.IndexOutOfBounds;
             const tail = self.head.prev;
             const data = tail.data;
@@ -125,7 +125,7 @@ pub fn LinkedList(comptime ItemType: type) type {
             return data;
         }
 
-        fn getend(self: Self) !ItemType {
+        pub fn getend(self: Self) !ItemType {
             if (self.length == 0) return error.IndexOutOfBounds;
             return self.head.prev.data;
         }

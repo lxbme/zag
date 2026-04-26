@@ -14,7 +14,7 @@ pub fn DynamicArray(comptime Item: type) type {
         length: usize,
         allocator: std.mem.Allocator,
 
-        fn init(allocator: std.mem.Allocator, capacity: usize) !Self {
+        pub fn init(allocator: std.mem.Allocator, capacity: usize) !Self {
             const storage = try allocator.alloc(?Item, capacity);
             @memset(storage, null);
             return Self{
@@ -25,11 +25,11 @@ pub fn DynamicArray(comptime Item: type) type {
             };
         }
 
-        fn deinit(self: *Self) void {
+        pub fn deinit(self: *Self) void {
             self.allocator.free(self.storage);
         }
 
-        fn append(self: *Self, item: Item) !void {
+        pub fn append(self: *Self, item: Item) !void {
             if (self.length >= self.capacity) { // if full then extract
                 const new_capacity = @divFloor(self.capacity * 3, 2) + 1; // make sure have 1 free capacity
                 const new_storage = try self.allocator.alloc(?Item, new_capacity);
@@ -44,7 +44,7 @@ pub fn DynamicArray(comptime Item: type) type {
             self.length += 1;
         }
 
-        fn get(self: Self, idx: usize) !Item {
+        pub fn get(self: Self, idx: usize) !Item {
             if (idx < self.length) {
                 return self.storage[idx].?;
             } else {
@@ -52,7 +52,7 @@ pub fn DynamicArray(comptime Item: type) type {
             }
         }
 
-        fn set(self: Self, idx: usize, item: Item) !void {
+        pub fn set(self: Self, idx: usize, item: Item) !void {
             if (idx < self.length) {
                 self.storage[idx] = item;
             } else {
@@ -60,7 +60,7 @@ pub fn DynamicArray(comptime Item: type) type {
             }
         }
 
-        fn delete(self: *Self, idx: usize) !void {
+        pub fn delete(self: *Self, idx: usize) !void {
             if (idx < self.length) {
                 for (idx..self.length - 1) |i| {
                     self.storage[i] = self.storage[i + 1];
