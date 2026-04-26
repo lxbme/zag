@@ -1,3 +1,9 @@
+// NOTE
+// This hashmap uses a linear probing strategy for hash collisions.
+// Available space is 1/2 of the total capacity. When available
+// space hits 0, capacity will double. Available space will then
+// be reset to (1/2 new capacity - item count).
+
 const std = @import("std");
 
 const INIT_CAPACITY: usize = 4;
@@ -41,7 +47,7 @@ pub fn Hashmap(comptime K: type, comptime V: type) type {
                     self.values[idx] = v;
                     self.size += 1;
                     self.available -|= 1;
-                    if (self.available == 0) try self.extract();
+                    if (self.available == 0) try self.expand();
                     return;
                 }
                 if (eqlKey(self.keys[idx].?, k)) {
@@ -50,7 +56,7 @@ pub fn Hashmap(comptime K: type, comptime V: type) type {
                 }
                 idx = self.getIdx(idx + 1);
             }
-            try self.extract();
+            try self.expand();
             try self.instert(k, v);
         }
 
@@ -65,7 +71,7 @@ pub fn Hashmap(comptime K: type, comptime V: type) type {
             return null;
         }
 
-        fn extract(self: *Self) !void {
+        fn expand(self: *Self) !void {
             const new_capacity = self.capacity * 2;
             const new_keys = try self.allocator.alloc(?K, new_capacity);
             const new_values = try self.allocator.alloc(?V, new_capacity);

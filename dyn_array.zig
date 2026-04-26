@@ -1,3 +1,8 @@
+// NOTE
+// This dynamic array automatically resizes:
+// Expansion: Triggered when full. newCapacity = (old * 1.5) + 1.
+// Shrinkage: Capacity halves when the length drops below 25%.
+
 const std = @import("std");
 
 pub fn DynamicArray(comptime Item: type) type {
@@ -25,7 +30,7 @@ pub fn DynamicArray(comptime Item: type) type {
         }
 
         fn append(self: *Self, item: Item) !void {
-            if (self.length >= self.capacity) {
+            if (self.length >= self.capacity) { // if full then extract
                 const new_capacity = @divFloor(self.capacity * 3, 2) + 1; // make sure have 1 free capacity
                 const new_storage = try self.allocator.alloc(?Item, new_capacity);
                 @memset(new_storage, null);

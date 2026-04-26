@@ -1,3 +1,9 @@
+// NOTE
+// A sentinel-based circular doubly linked list. Provides
+// O(1) access to both head and tail. Indexed access requ
+// -ires linear traversal from the head.Memory is managed
+// via the provided std.mem.Allocator.
+
 const std = @import("std");
 
 fn Node(comptime ItemType: type) type {
