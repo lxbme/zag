@@ -30,7 +30,7 @@ pub fn DynamicArray(comptime Item: type) type {
         }
 
         pub fn append(self: *Self, item: Item) !void {
-            if (self.length >= self.capacity) { // if full then extract
+            if (self.length >= self.capacity) { // if full then expand
                 const new_capacity = @divFloor(self.capacity * 3, 2) + 1; // make sure have 1 free capacity
                 const new_storage = try self.allocator.alloc(?Item, new_capacity);
                 @memset(new_storage, null);

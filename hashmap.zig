@@ -72,7 +72,7 @@ pub fn Hashmap(comptime K: type, comptime V: type) type {
         }
 
         fn expand(self: *Self) !void {
-            const new_capacity = self.capacity * 2;
+            const new_capacity = @max(self.capacity * 2, 4);
             const new_keys = try self.allocator.alloc(?K, new_capacity);
             const new_values = try self.allocator.alloc(?V, new_capacity);
             @memset(new_keys, null);

@@ -53,7 +53,7 @@ pub fn Queue(comptime ItemType: type) type {
             const old_capacity = self.capacity;
             var new_capacity: usize = undefined;
             if (expand) {
-                new_capacity = old_capacity * 2;
+                new_capacity = @max(old_capacity * 2, 4);
             } else {
                 new_capacity = @divFloor(old_capacity, 2);
                 if (new_capacity < 1) return; // don't shrink to 0

@@ -41,7 +41,7 @@ pub fn Stack(comptime ItemType: type) type {
         fn resize(self: *Self, expand: bool) !void {
             var new_capacity: usize = undefined;
             if (expand) {
-                new_capacity = self.capacity * 2;
+                new_capacity = @max(self.capacity * 2, 4);
             } else {
                 new_capacity = @divFloor(self.capacity, 2);
                 if (new_capacity < 1) return; // don't shrink to 0
