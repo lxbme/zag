@@ -81,5 +81,12 @@ pub fn GapBuffer(comptime ItemType: type) type {
             self.gap_rear = new_gap_rear;
             self.storage = new_ptr;
         }
+
+        pub fn to_string(allocator: std.mem.Allocator, self: Self) ![]u8 {
+            const string_ptr = try allocator.alloc(u8, self.length);
+            @memcpy(string_ptr[0..self.cursor], self.storage[0..self.cursor]);
+            @memcpy(string_ptr[self.cursor..], self.storage[self.gap_rear..]);
+            return string_ptr;
+        }
     };
 }
